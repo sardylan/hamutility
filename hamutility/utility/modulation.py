@@ -3,6 +3,7 @@ from odoo import models, api
 
 class ModulationUtility(models.AbstractModel):
     _name = "hamutility.utility_modulation"
+    _description = "Utility methods for Modulation entities"
 
     @api.model
     def compute_bandwidth_tag(self, bandwidth=0):
