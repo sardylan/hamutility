@@ -9,7 +9,13 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
         tagName: 'div',
         supportedFieldTypes: ['char'],
 
+        init: function () {
+            console.log('init');
+            this._super.apply(this, arguments);
+        },
+
         start: function () {
+            console.log('start');
             let options = this.attrs.options;
 
             let mapDiv = $('<div>');
@@ -58,34 +64,30 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
                     break;
             }
 
-            this._super();
-            // AbstractField.prototype.start.call(this);
+            return this._super.apply(this, arguments);
         },
 
         _renderReadonly: function () {
             console.log('_renderReadonly');
 
-            const options = this.attrs.options;
-            const value = this._getValue();
-
-            if (value === undefined) {
+            if (this.value === undefined) {
                 return;
             }
 
+            console.log(this.value);
+
+            const options = this.attrs.options;
+
+            this._setValue(this.value);
+
             switch (options.mode) {
                 case 'marker':
-                    this.map.setCenter(value.position);
-                    this.map.setZoom(value.zoom);
-
                     this.marker.draggable = false;
-                    this.marker.setPosition(value.position);
-
                     this.marker.setMap(this.map);
                     break;
 
                 case 'rectangle':
-                    this.rectangle.setBounds(value.rectangle);
-
+                    this.rectangle.setBounds(this.value.rectangle);
                     this.rectangle.setMap(this.map);
                     break;
             }
@@ -103,9 +105,10 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
             let options = this.attrs.options;
 
             this.map.addListener('zoom_changed', function () {
-                let value = that._getValue();
-                value.zoom = that.map.getZoom();
-                that._setValue(value);
+                that.value = that._getValue();
+
+                that._doDebouncedAction();
+                console.log(that.value);
             });
 
             switch (options.mode) {
@@ -117,7 +120,10 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
                             lat: event.latLng.lat(),
                             lng: event.latLng.lng()
                         };
-                        that._setValue(value);
+                        that.value = value;
+
+                        that._doDebouncedAction();
+                        console.log(that.value);
                     });
                     break;
 
@@ -130,6 +136,8 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
         },
 
         _formatValue: function (value) {
+            console.log('_formatValue');
+
             try {
                 return JSON.stringify(value);
             } catch (e) {
@@ -138,6 +146,8 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
         },
 
         _parseValue: function (value) {
+            console.log('_parseValue');
+
             try {
                 return JSON.parse(value);
             } catch (e) {
@@ -146,27 +156,35 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
         },
 
         _getValue: function () {
-            const value = this._parseValue(this.value);
+            console.log('_getValue');
 
-            if (!value) {
+            let options = this.attrs.options;
+
+            if (options.mode === 'marker') {
                 return {
                     position: {
-                        lat: 0,
-                        lng: 0
+                        lat: this.marker.position.lat,
+                        lng: this.marker.position.lng
                     },
-                    zoom: 0
-                }
+                    zoom: this.map.zoom
+                };
             }
 
-            return value;
+            return this._super.apply(this, arguments);
         },
 
-        _setValue: function (value, options) {
-            this.isDirty = true;
-            this._doDebouncedAction();
+        _setValue: function (value) {
+            console.log('_setValue');
 
-            console.log(value);
-            return this._super(value, options);
+            let options = this.attrs.options;
+
+            if (options.mode === 'marker') {
+                this.map.setCenter(value.position);
+                this.map.setZoom(value.zoom);
+
+                this.marker.setPosition(value.position);
+            }
+
         }
     });
 
