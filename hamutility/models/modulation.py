@@ -47,9 +47,10 @@ SELECTION_MODULATION = [
 
 class Modulation(models.Model):
     _name = "hamutility.modulation"
+    _inherit = "mail.thread"
     _description = "Modulation"
-    _order = "name ASC"
     _rec_name = "complete_name"
+    _order = "name ASC"
 
     _constraints = [
         ("name_uniq", "UNIQUE(name)", "Modulation already exists. Name must be unique.")
@@ -59,24 +60,39 @@ class Modulation(models.Model):
         string="Name",
         required=True,
         translate=False,
+        track_visibility="onchange"
+    )
+
+    description = fields.Char(
+        string="Description",
+        track_visibility="onchange"
     )
 
     modulation = fields.Selection(
         string="Modulation",
         required=True,
-        selection=SELECTION_MODULATION
+        selection=SELECTION_MODULATION,
+        track_visibility="onchange"
     )
 
     signal = fields.Selection(
         string="Signal",
         required=True,
-        selection=SELECTION_SIGNAL
+        selection=SELECTION_SIGNAL,
+        track_visibility="onchange"
     )
 
     information = fields.Selection(
         string="Information",
         required=True,
-        selection=SELECTION_INFORMATION
+        selection=SELECTION_INFORMATION,
+        track_visibility="onchange"
+    )
+
+    bandwidth = fields.Integer(
+        string="Bandwidth",
+        help="Bandwidth in Hz",
+        track_visibility="onchange"
     )
 
     emission = fields.Char(
@@ -122,7 +138,13 @@ class Modulation(models.Model):
         for rec in self:
             rec.complete_name = "%s (%s)" % (rec.name, rec.emission)
 
-    @api.depends("modulation", "signal", "information")
+    @api.depends("bandwidth", "modulation", "signal", "information")
     def _compute_emission(self):
+        modulation_utility = self.env["hamutility.utility_modulation"]
+
         for rec in self:
-            rec.emission = "%s%s%s" % (rec.modulation, rec.signal, rec.information)
+            bandwidth = ""
+            if rec.bandwidth:
+                bandwidth = modulation_utility.compute_bandwidth_tag(rec.bandwidth)
+
+            rec.emission = "%s%s%s%s" % (bandwidth, rec.modulation, rec.signal, rec.information)

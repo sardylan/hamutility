@@ -21,7 +21,8 @@
         "menu/items.xml",
 
         "data/cq_zone.xml",
-        "data/itu_zone.xml"
+        "data/itu_zone.xml",
+        "data/modulation.xml"
     ],
     "application": False
 }

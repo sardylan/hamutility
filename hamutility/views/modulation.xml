@@ -21,12 +21,16 @@
                 <form>
                     <sheet>
                         <h1>
-                            <field name="name" class="w-25"/>
+                            <field name="name" class="w-50"/>
                         </h1>
                         <group>
-                            <field name="modulation" class="w-75"/>
-                            <field name="signal" class="w-75"/>
-                            <field name="information" class="w-75"/>
+                            <field name="description"/>
+                        </group>
+                        <group>
+                            <field name="modulation" class="w-50"/>
+                            <field name="signal" class="w-50"/>
+                            <field name="information" class="w-50"/>
+                            <field name="bandwidth" class="w-50"/>
                         </group>
                         <notebook>
                             <page string="Note">
@@ -34,7 +38,26 @@
                             </page>
                         </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="modulation_search">
+            <field name="name">modulation_search</field>
+            <field name="model">hamutility.modulation</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <separator/>
+                    <field name="modulation"/>
+                    <field name="signal"/>
+                    <field name="information"/>
+                    <field name="bandwidth"/>
+                </search>
             </field>
         </record>
 
