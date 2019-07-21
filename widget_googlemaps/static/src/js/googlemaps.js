@@ -9,24 +9,31 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
         tagName: 'div',
         supportedFieldTypes: ['char'],
 
-        init: function () {
+        map: undefined,
+
+        init: function (parent, name, record, options) {
+            this._super(parent, name, record, options);
+
             console.log('init');
-            this._super.apply(this, arguments);
+
+            this.nodeOptions = _.extend({
+                center: {lat: 0, lng: 0},
+                zoom: 4,
+                mapTypeId: 'hybrid',
+                mode: 'locator'
+            }, this.attrs.options);
+
+            console.log(this.nodeOptions);
         },
 
         start: function () {
             console.log('start');
-            let options = this.attrs.options;
+
+            let options = this.nodeOptions;
 
             let mapDiv = $('<div>');
             mapDiv.addClass('googlemaps-map');
             $(this.el).append(mapDiv);
-
-            if (!('center' in options)) options.center = {lat: 0, lng: 0};
-            if (!('zoom' in options)) options.zoom = 4;
-            if (!('mapTypeId' in options)) options.mapTypeId = 'hybrid';
-
-            if (!('mode' in options)) options.mode = 'locator';
 
             this.map = new google.maps.Map(mapDiv[0], {
                 center: options.center,
@@ -64,30 +71,33 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
                     break;
             }
 
-            return this._super.apply(this, arguments);
+            return this._super();
         },
 
         _renderReadonly: function () {
             console.log('_renderReadonly');
 
-            if (this.value === undefined) {
+            let options = this.nodeOptions;
+            let value = JSON.parse(this.value);
+
+            if (value === undefined) {
                 return;
             }
 
-            console.log(this.value);
-
-            const options = this.attrs.options;
-
-            this._setValue(this.value);
-
             switch (options.mode) {
                 case 'marker':
+                    this.map.setCenter(value.position);
+                    this.map.setZoom(value.zoom);
+
                     this.marker.draggable = false;
+                    this.marker.setPosition(value.position);
+
                     this.marker.setMap(this.map);
                     break;
 
                 case 'rectangle':
-                    this.rectangle.setBounds(this.value.rectangle);
+                    this.rectangle.setBounds(value.rectangle);
+
                     this.rectangle.setMap(this.map);
                     break;
             }
@@ -102,28 +112,29 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
             console.log('_renderEdit');
 
             let that = this;
-            let options = this.attrs.options;
+            let options = this.nodeOptions;
+            let value = JSON.parse(this.value);
+
+            if (value === undefined) {
+                return;
+            }
 
             this.map.addListener('zoom_changed', function () {
-                that.value = that._getValue();
-
+                that.isDirty = true;
                 that._doDebouncedAction();
-                console.log(that.value);
             });
 
             switch (options.mode) {
                 case 'marker':
-                    this.marker.draggable = true;
-                    this.marker.addListener('drag', function (event) {
-                        let value = that._getValue();
-                        value.position = {
-                            lat: event.latLng.lat(),
-                            lng: event.latLng.lng()
-                        };
-                        that.value = value;
+                    this.map.setCenter(value.position);
+                    this.map.setZoom(value.zoom);
 
+                    this.marker.draggable = true;
+                    this.marker.setMap(this.map);
+                    this.marker.setPosition(value.position);
+                    this.marker.addListener('drag', function (event) {
+                        that.isDirty = true;
                         that._doDebouncedAction();
-                        console.log(that.value);
                     });
                     break;
 
@@ -147,45 +158,23 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
 
         _parseValue: function (value) {
             console.log('_parseValue');
-
-            try {
-                return JSON.parse(value);
-            } catch (e) {
-                return undefined;
-            }
+            return this._formatValue(value);
         },
 
         _getValue: function () {
             console.log('_getValue');
 
-            let options = this.attrs.options;
+            const position = this.marker.getPosition();
 
-            if (options.mode === 'marker') {
-                return {
-                    position: {
-                        lat: this.marker.position.lat,
-                        lng: this.marker.position.lng
-                    },
-                    zoom: this.map.zoom
-                };
+            return {
+                position: {
+                    lat: position.lat(),
+                    lng: position.lng()
+                },
+                zoom: this.map.getZoom()
             }
-
-            return this._super.apply(this, arguments);
         },
 
-        _setValue: function (value) {
-            console.log('_setValue');
-
-            let options = this.attrs.options;
-
-            if (options.mode === 'marker') {
-                this.map.setCenter(value.position);
-                this.map.setZoom(value.zoom);
-
-                this.marker.setPosition(value.position);
-            }
-
-        }
     });
 
     registry.add('googlemaps', GoogleMaps);
