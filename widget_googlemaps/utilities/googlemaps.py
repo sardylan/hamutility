@@ -6,6 +6,4 @@ class GoogleMapsUtility(models.AbstractModel):
 
     @api.model
     def compute_default_position_value(self):
-        return {
-
-        }
+        return '{}'

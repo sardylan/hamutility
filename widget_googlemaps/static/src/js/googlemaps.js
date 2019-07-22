@@ -1,6 +1,14 @@
 odoo.define('widget_googlemaps.googlemaps', function (require) {
     'use strict';
 
+    const DEFAULT_VALUE = {
+        position: {
+            lat: 0,
+            lng: 0
+        },
+        zoom: 4
+    };
+
     let DebouncedField = require('web.basic_fields').DebouncedField;
     let registry = require('web.field_registry');
 
@@ -78,11 +86,7 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
             console.log('_renderReadonly');
 
             let options = this.nodeOptions;
-            let value = JSON.parse(this.value);
-
-            if (value === undefined) {
-                return;
-            }
+            let value = this._readValue();
 
             switch (options.mode) {
                 case 'marker':
@@ -113,11 +117,7 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
 
             let that = this;
             let options = this.nodeOptions;
-            let value = JSON.parse(this.value);
-
-            if (value === undefined) {
-                return;
-            }
+            let value = this._readValue();
 
             this.map.addListener('zoom_changed', function () {
                 that.isDirty = true;
@@ -175,6 +175,29 @@ odoo.define('widget_googlemaps.googlemaps', function (require) {
             }
         },
 
+        _readValue: function () {
+            if (!this.value
+                || this.value === false
+                || this.value === ''
+                || this.value === '{}') {
+                return DEFAULT_VALUE;
+            }
+
+            let value = undefined;
+
+            try {
+                value = JSON.parse(this.value);
+            } catch (e) {
+            }
+
+            if (value === undefined
+                || value === false
+                || value === {}) {
+                return DEFAULT_VALUE;
+            }
+
+            return value
+        }
     });
 
     registry.add('googlemaps', GoogleMaps);
