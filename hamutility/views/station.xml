@@ -5,7 +5,7 @@
 
         <record model="ir.ui.view" id="view_station_tree">
             <field name="name">view_station_tree</field>
-            <field name="model">station.station</field>
+            <field name="model">hamutility.station</field>
             <field name="arch" type="xml">
                 <tree>
                     <field name="callsign"/>
@@ -16,7 +16,7 @@
 
         <record model="ir.ui.view" id="view_station_form">
             <field name="name">view_station_form</field>
-            <field name="model">station.station</field>
+            <field name="model">hamutility.station</field>
             <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -48,7 +48,7 @@
 
         <record model="ir.ui.view" id="view_station_search">
             <field name="name">view_station_search</field>
-            <field name="model">station.station</field>
+            <field name="model">hamutility.station</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="callsign"/>

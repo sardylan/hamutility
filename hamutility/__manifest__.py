@@ -4,16 +4,19 @@
     "category": "Extra Tools",
     "summary": "HAM utilities and models",
     "depends": [
+        "base",
         "mail",
-        "snailmail"
+        "widget_googlemaps"
     ],
     "data": [
         "security/groups.xml",
         "security/access/modulation.xml",
         "security/access/country.xml",
+        "security/access/station.xml",
 
         "views/modulation.xml",
         "views/country.xml",
+        "views/station.xml",
 
         "wizard/import_prefix.xml",
 

@@ -2,10 +2,11 @@ from odoo import models, fields
 
 
 class Station(models.Model):
-    _name = "station.station"
+    _name = "hamutility.station"
     _description = "HAM radio stations"
     _inherit = "mail.thread"
     _rec_name = "callsign"
+    _order = "callsign ASC"
 
     _sql_constraints = [
         ("callsign_uniq", "UNIQUE(callsign)", "Callsign already present")
