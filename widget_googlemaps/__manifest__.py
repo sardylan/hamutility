@@ -1,6 +1,6 @@
 {
     "name": "Google Maps Widget",
-    "version": "12.0.0.0.0",
+    "version": "12.0.0.9.0",
     "category": "Extra Tools",
     "summary": "Google Maps backoffice widget",
     "description": "This module implements a custom widget for displaying a char field using Google Maps JS API",
