@@ -1,22 +1,18 @@
 {
     "name": "HAM Utility",
-    "version": "12.0.0.0.0",
+    "version": "12.0.0.8.0",
     "category": "Extra Tools",
     "summary": "HAM utilities and models",
     "depends": [
-        "base",
-        "mail",
-        "widget_googlemaps"
+        "mail"
     ],
     "data": [
         "security/groups.xml",
         "security/access/modulation.xml",
         "security/access/country.xml",
-        "security/access/station.xml",
 
         "views/modulation.xml",
         "views/country.xml",
-        "views/station.xml",
 
         "wizard/import_prefix.xml",
 

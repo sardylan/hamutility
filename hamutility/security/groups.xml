@@ -21,18 +21,5 @@
             <field name="users" eval="[(4, ref('base.user_admin'))]"/>
         </record>
 
-        <record model="res.groups" id="group_station_view">
-            <field name="name">Can view stations</field>
-            <field name="category_id" ref="category_hamutility"/>
-            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
-        </record>
-
-        <record model="res.groups" id="group_station_manage">
-            <field name="name">Can manage stations</field>
-            <field name="category_id" ref="category_hamutility"/>
-            <field name="implied_ids" eval="[(4, ref('hamutility.group_station_view'))]"/>
-            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
-        </record>
-
     </data>
 </odoo>
