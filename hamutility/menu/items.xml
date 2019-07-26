@@ -5,7 +5,8 @@
 
         <menuitem id="menu_root"
                   name="HAM Utility"
-                  sequence="1000"/>
+                  web_icon="hamutility,static/description/icon.png"
+                  sequence="0"/>
 
         <menuitem id="menu_modulation"
                   name="Modulations"
