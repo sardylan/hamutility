@@ -61,5 +61,30 @@
             <field name="information">B</field>
         </record>
 
+        <record model="hamutility.modulation" id="hamutility_modulation_sstv">
+            <field name="name">SSTV</field>
+            <field name="description">Slow-Scan Television.</field>
+            <field name="modulation">J</field>
+            <field name="signal">3</field>
+            <field name="information">F</field>
+        </record>
+
+        <record model="hamutility.modulation" id="hamutility_modulation_c4fm">
+            <field name="name">C4FM</field>
+            <field name="description">P25 Phase I C4FM voice (typically used for single-site systems).</field>
+            <field name="modulation">F</field>
+            <field name="signal">1</field>
+            <field name="information">E</field>
+            <field name="bandwidth">8100</field>
+        </record>
+
+        <record model="hamutility.modulation" id="hamutility_modulation_ft8">
+            <field name="name">FT8</field>
+            <field name="description">Amateur radio QSO communication protocol developed by Joe Taylor (K1JT) and Steve Franke (K9AN).</field>
+            <field name="modulation">J</field>
+            <field name="signal">2</field>
+            <field name="information">B</field>
+        </record>
+
     </data>
 </odoo>
